@@ -10,7 +10,7 @@ export class Categoria
     @Column()
     nombreCategoria: string;
 
-    @ManyToOne(() => Producto, (producto) => producto.categorias, { nullable: false, onDelete: 'CASCADE' })
-    productos: Producto;
+    @OneToMany(() => Producto, (producto) => producto.categoria)
+    productos: Producto[];
 
 }

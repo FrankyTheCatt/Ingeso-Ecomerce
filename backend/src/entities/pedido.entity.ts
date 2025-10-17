@@ -8,7 +8,7 @@ export class Pedido
     @PrimaryGeneratedColumn()
     idPedido: number;
 
-    @Column()
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fechaPedido: Date;
 
     @Column()

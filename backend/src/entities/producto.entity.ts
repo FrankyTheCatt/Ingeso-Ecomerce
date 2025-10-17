@@ -18,12 +18,12 @@ export class Producto
     @Column()
     precio: number;
 
-    @ManyToOne(() => DetallePedido, (detalle) => detalle.producto, { nullable: false, onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'idDetalle' })
-    detalle: DetallePedido;
+    @OneToMany(() => DetallePedido, (detalle) => detalle.producto)
+    detalles: DetallePedido[];
 
-    @OneToMany(() => Categoria, (categoria) => categoria.productos, { nullable: false, onDelete: 'CASCADE' })
-    categorias: Categoria[];
+    @ManyToOne(() => Categoria, (categoria) => categoria.productos, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'idCategoria' })
+    categoria: Categoria;
 
     @OneToMany(() => Inventario, (inventario) => inventario.productos)
     inventarios: Inventario[];

@@ -13,7 +13,7 @@ export class Usuario
     @Column()
     rut: string;
 
-    @Column()
+    @Column({unique: true})
     email: string;
 
     @Column()
