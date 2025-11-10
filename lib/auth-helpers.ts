@@ -10,23 +10,33 @@ export async function isAdmin() {
 
     if (!user) return false
 
-    const { data: roleData, error } = await supabase.from("user_roles").select("role").eq("user_id", user.id).single()
+    const { data: role, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle()
 
-    // Si hay error de recursión, retornar false y loguear
-    if (error) {
-      console.error("[v0] Error checking admin role:", error.message)
-      if (error.message.includes("infinite recursion")) {
-        console.error(
-          "[v0] CRITICAL: Infinite recursion in user_roles policies. Please run scripts/009_fix_recursion_completely.sql in Supabase SQL Editor",
-        )
+      if (error) {
+        console.warn("[isAdmin] Error al obtener rol:", error.message)
+        return false // simplemente devolvemos false, no lanzamos error
       }
-      return false
-    }
 
-    return roleData?.role === "admin"
-  } catch (error) {
-    console.error("[v0] Exception in isAdmin:", error)
-    return false
+      if (!role) {
+        console.warn("[isAdmin] Usuario sin rol asignado. Se asume cliente.")
+        return false
+      }
+
+      return role.role === "admin"
+
+  } catch (error: any) {
+  // ✅ Esta es la comprobación manual de la Solución 2
+      if (typeof error.digest === 'string' && error.digest.startsWith('NEXT_REDIRECT')) {
+        throw error // ✅ Es una redirección, la volvemos a lanzar
+      }
+
+      // Si no es redirección, es un error real
+      console.error("[v0] Exception in isAdmin:", error)
+      return false
   }
 }
 

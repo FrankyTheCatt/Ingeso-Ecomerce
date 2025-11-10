@@ -24,9 +24,14 @@ export default async function AdminLayout({
     if (!userIsAdmin) {
       redirect("/?error=unauthorized")
     }
-  } catch (error) {
+  } catch (error: any) {
+    // ✅ Esta es la comprobación manual que reemplaza a isRedirectError
+    if (typeof error.digest === 'string' && error.digest.startsWith('NEXT_REDIRECT')) {
+      throw error; // Es una redirección, vuelve a lanzarla
+    }
+
+    // Si NO es una redirección, es un error real
     console.error("[v0] Error checking admin status:", error)
-    // Si hay error de recursión, redirigir a página de error
     redirect("/database-error")
   }
 
