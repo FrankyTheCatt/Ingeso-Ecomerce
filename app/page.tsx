@@ -6,22 +6,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { DatabaseErrorBanner } from "@/components/database-error-banner"
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: { error?: string }
-}) {
+export default async function HomePage({searchParams,}: {searchParams: Promise<{ error?: string }> }) {
+
+  const params = await searchParams;
   const supabase = await createClient()
 
   const { data: products } = await supabase.from("products").select("*").order("created_at", { ascending: false })
-
   const { data: categories } = await supabase.from("categories").select("*").order("name")
 
   return (
     <div className="container py-8">
       <DatabaseErrorBanner />
 
-      {searchParams.error === "unauthorized" && (
+      {params?.error === "unauthorized" && (
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
