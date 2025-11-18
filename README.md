@@ -47,20 +47,14 @@ Sigue estos pasos para correr el proyecto en tu máquina local:
     pnpm install
     ```
 
-3.  **Configurar variables de entorno:**
-    Crea un archivo `.env.local` en la raíz del proyecto y añade tus credenciales de Supabase. (Puedes encontrar estas claves en el dashboard de tu proyecto en Supabase).
-    ```env
-    NEXT_PUBLIC_SUPABASE_URL=TU_URL_DE_SUPABASE
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=TU_LLAVE_PUBLICA_ANON
-    ```
 
-4.  **Correr el proyecto (Desarrollo):**
+3.  **Correr el proyecto (Desarrollo):**
     ```bash
     pnpm dev
     ```
     Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-5.  **Correr el proyecto (Producción):**
+4.  **Correr el proyecto (Producción):**
     Para simular el entorno de producción:
     ```bash
     # 1. Construir la aplicación
