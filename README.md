@@ -66,6 +66,6 @@ Sigue estos pasos para correr el proyecto en tu máquina local:
 
 ## 👥 Autores
 
-* [Nicolas Galleguillos]
-* [Vicente Ruiz]
-* [Abraham Sepúlveda]
+* Nicolas Galleguillos
+* Vicente Ruiz
+* Abraham Sepúlveda
