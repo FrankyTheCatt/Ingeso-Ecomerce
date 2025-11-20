@@ -105,7 +105,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_de_supabase
 
 # URL de redirección para autenticación (opcional en local)
 NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL=http://localhost:3000/my-orders
-
+```
 ## 👥 Autores
 
 * Nicolas Galleguillos
