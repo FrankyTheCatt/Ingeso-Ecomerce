@@ -32,7 +32,7 @@ export function ProductActions({ productId }: { productId: string }) {
         router.refresh()
       }
     } catch (error) {
-      console.error("[v0] Error deleting product:", error)
+      console.error("Error deleting product:", error)
     } finally {
       setIsDeleting(false)
     }

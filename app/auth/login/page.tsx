@@ -7,10 +7,9 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, ShoppingBag } from "lucide-react"
+import { Loader2, Store, ArrowRight } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -37,14 +36,12 @@ export default function LoginPage() {
 
       if (authError) throw authError
 
-      // Si hay un redirect específico, usarlo
       if (redirect) {
         router.push(redirect)
         router.refresh()
         return
       }
 
-      // Verificar si el usuario es administrador
       if (authData.user) {
         const { data: roleData } = await supabase
           .from("user_roles")
@@ -53,15 +50,12 @@ export default function LoginPage() {
           .maybeSingle()
 
         if (roleData?.role === "admin") {
-          // Si es admin, redirigir al panel de administración
           router.push("/admin")
         } else {
-          // Si no es admin, redirigir a la página principal
           router.push("/")
         }
         router.refresh()
       } else {
-        // Fallback a página principal si no hay usuario
         router.push("/")
         router.refresh()
       }
@@ -73,31 +67,41 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 flex items-center justify-center min-h-[calc(100vh-4rem)] py-8 max-w-7xl">
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <ShoppingBag className="h-12 w-12 text-primary" />
+    <div className="min-h-screen w-full flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex flex-col justify-center items-center p-8 sm:p-12 bg-white dark:bg-voodoo-950">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center mb-8">
+             <Link href="/" className="inline-flex items-center gap-2 group mb-6">
+                <div className="bg-voodoo-600 text-white p-2 rounded-xl group-hover:bg-voodoo-700 transition-colors shadow-lg shadow-voodoo-200 dark:shadow-none">
+                  <Store className="h-8 w-8" />
+                </div>
+              </Link>
+            <h1 className="text-3xl font-bold tracking-tight text-voodoo-950 dark:text-voodoo-50">¡Bienvenido de nuevo!</h1>
+            <p className="text-muted-foreground mt-2">Ingresa tus credenciales para acceder a tu cuenta</p>
           </div>
-          <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
-          <CardDescription>Accede a tu cuenta de noporolos store</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
+              <Label htmlFor="email" className="text-voodoo-900 dark:text-voodoo-100">Correo Electrónico</Label>
               <Input
                 id="email"
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="tu@correo.cl"
+                placeholder="nombre@ejemplo.com"
+                className="h-12 bg-voodoo-50 dark:bg-voodoo-900/50 border-voodoo-200 dark:border-voodoo-800 focus:ring-voodoo-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-voodoo-900 dark:text-voodoo-100">Contraseña</Label>
+                <Link href="#" className="text-sm font-medium text-voodoo-600 hover:text-voodoo-500">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -105,31 +109,62 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 placeholder="••••••••"
+                className="h-12 bg-voodoo-50 dark:bg-voodoo-900/50 border-voodoo-200 dark:border-voodoo-800 focus:ring-voodoo-500"
               />
             </div>
 
-            {error && <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">{error}</div>}
+            {error && (
+              <div className="p-4 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-xl animate-in fade-in slide-in-from-top-2">
+                {error}
+              </div>
+            )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 text-base font-semibold bg-voodoo-600 hover:bg-voodoo-700 text-white shadow-lg shadow-voodoo-500/20" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Iniciando sesión...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Verificando...
                 </>
               ) : (
-                "Iniciar Sesión"
+                <>
+                  Iniciar Sesión <ArrowRight className="ml-2 h-5 w-5" />
+                </>
               )}
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">¿No tienes cuenta? </span>
-            <Link href="/auth/sign-up" className="text-primary hover:underline">
-              Regístrate
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-voodoo-100 dark:border-voodoo-800" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white dark:bg-voodoo-950 px-2 text-muted-foreground">O continúa con</span>
+            </div>
+          </div>
+
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">¿Aún no tienes cuenta? </span>
+            <Link href="/auth/sign-up" className="font-semibold text-voodoo-600 hover:text-voodoo-500 hover:underline">
+              Regístrate gratis
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Right Side - Image/Design */}
+      <div className="hidden lg:flex flex-1 bg-voodoo-900 relative overflow-hidden items-center justify-center p-12">
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 rounded-full bg-voodoo-500/30 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 rounded-full bg-voodoo-400/20 blur-3xl"></div>
+        
+        <div className="relative z-10 text-center space-y-6 max-w-lg">
+          <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-white/20 mb-8">
+            <Store className="h-12 w-12 text-white" />
+          </div>
+          <h2 className="text-4xl font-bold text-white tracking-tight">Tu tienda universitaria favorita</h2>
+          <p className="text-xl text-voodoo-200">Encuentra todo lo que necesitas para el semestre en un solo lugar. Rápido, fácil y seguro.</p>
+        </div>
+      </div>
     </div>
   )
 }

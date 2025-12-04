@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     })
 
     if (error) {
-      console.error("[v0] Error uploading file:", error)
+      console.error("Error uploading file:", error)
       return NextResponse.json({ error: "Error al subir la imagen" }, { status: 500 })
     }
 
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, url: publicUrl, path: filePath })
   } catch (error) {
-    console.error("[v0] Error in upload route:", error)
+    console.error("Error in upload route:", error)
     return NextResponse.json({ error: "Error al procesar la imagen" }, { status: 500 })
   }
 }

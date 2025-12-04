@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, saleId: sale.id })
   } catch (error) {
-    console.error("[v0] Error creating sale:", error)
+    console.error("Error creating sale:", error)
     return NextResponse.json({ error: "Error al procesar la venta" }, { status: 500 })
   }
 }

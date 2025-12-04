@@ -2,8 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
-import { StoreHeader } from "@/components/store-header"
 import { CartProvider } from "@/lib/cart-context"
+import { MainLayout } from "@/components/main-layout"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +18,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "noporolos store - Tu tienda universitaria",
   description: "Todo lo que necesitas para tu vida universitaria",
-    generator: 'v0.app'
 }
 
 export default function RootLayout({
@@ -33,8 +32,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <CartProvider>
-          <StoreHeader />
-          <main className="w-full mx-auto">{children}</main>
+          <MainLayout>
+            {children}
+          </MainLayout>
         </CartProvider>
       </body>
     </html>

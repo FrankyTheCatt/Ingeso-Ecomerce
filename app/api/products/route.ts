@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, product: data })
   } catch (error) {
-    console.error("[v0] Error creating product:", error)
+    console.error("Error creating product:", error)
     return NextResponse.json({ error: "Error al crear el producto" }, { status: 500 })
   }
 }

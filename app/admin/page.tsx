@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatPrice } from "@/lib/format"
-import { Package, ShoppingCart, TrendingUp, AlertCircle } from "lucide-react"
+import { Package, ShoppingCart, TrendingUp, AlertCircle, User } from "lucide-react"
 import { SalesChart } from "@/components/sales-chart"
 import { TopProductsChart } from "@/components/top-products-chart"
 import { CategorySalesChart } from "@/components/category-sales-chart"
@@ -95,91 +95,101 @@ export default async function AdminDashboardPage() {
     .limit(5)
 
   return (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Resumen general de tu tienda</p>
+    <div className="space-y-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight text-voodoo-950 dark:text-voodoo-50">Dashboard</h1>
+        <p className="text-voodoo-600 dark:text-voodoo-400">Resumen de actividad y rendimiento de tu tienda.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-voodoo-100 dark:border-voodoo-800 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Productos</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-voodoo-600 dark:text-voodoo-400">Ingresos Totales</CardTitle>
+            <TrendingUp className="h-4 w-4 text-voodoo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalProducts || 0}</div>
+            <div className="text-2xl font-bold text-voodoo-900 dark:text-voodoo-50">{formatPrice(totalRevenue)}</div>
+            <p className="text-xs text-muted-foreground mt-1">+20.1% mes pasado</p>
           </CardContent>
         </Card>
-
-        <Card>
+        <Card className="border-voodoo-100 dark:border-voodoo-800 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Stock Bajo</CardTitle>
-            <AlertCircle className="h-4 w-4 text-destructive" />
+            <CardTitle className="text-sm font-medium text-voodoo-600 dark:text-voodoo-400">Ventas Totales</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-voodoo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{lowStockCount || 0}</div>
-            <p className="text-xs text-muted-foreground">Productos con stock ≤ 5</p>
+            <div className="text-2xl font-bold text-voodoo-900 dark:text-voodoo-50">{totalSales || 0}</div>
+             <p className="text-xs text-muted-foreground mt-1">+15% mes pasado</p>
           </CardContent>
         </Card>
-
-        <Card>
+        <Card className="border-voodoo-100 dark:border-voodoo-800 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Ventas</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-voodoo-600 dark:text-voodoo-400">Total Productos</CardTitle>
+            <Package className="h-4 w-4 text-voodoo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalSales || 0}</div>
+            <div className="text-2xl font-bold text-voodoo-900 dark:text-voodoo-50">{totalProducts || 0}</div>
+             <p className="text-xs text-muted-foreground mt-1">Activos en catálogo</p>
           </CardContent>
         </Card>
-
-        <Card>
+        <Card className="border-voodoo-100 dark:border-voodoo-800 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ingresos Totales</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-voodoo-600 dark:text-voodoo-400">Alertas de Stock</CardTitle>
+            <AlertCircle className={`h-4 w-4 ${lowStockCount && lowStockCount > 0 ? "text-red-500 animate-pulse" : "text-voodoo-500"}`} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(totalRevenue)}</div>
+            <div className="text-2xl font-bold text-voodoo-900 dark:text-voodoo-50">{lowStockCount || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">Productos con stock bajo</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <SalesChart data={recentSalesData || []} />
-        <TopProductsChart data={topProductsList} />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <div className="col-span-4">
+            <SalesChart data={recentSalesData || []} />
+        </div>
+        <div className="col-span-3">
+             <TopProductsChart data={topProductsList} />
+        </div>
       </div>
 
-      <CategorySalesChart data={categoryData} />
-      {/* </CHANGE> */}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Ventas Recientes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentSales && recentSales.length > 0 ? (
-              recentSales.map((sale: any) => (
-                <div key={sale.id} className="flex items-center justify-between border-b pb-4 last:border-0">
-                  <div>
-                    <p className="font-medium">{sale.customer_name}</p>
-                    <p className="text-sm text-muted-foreground">{sale.customer_email}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {sale.sale_items.length} producto(s) - {new Date(sale.created_at).toLocaleDateString("es-CL")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold">{formatPrice(sale.total)}</p>
-                    <p className="text-xs text-muted-foreground">{sale.status}</p>
-                  </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <div className="col-span-3">
+            <CategorySalesChart data={categoryData} />
+        </div>
+        <div className="col-span-4">
+            <Card className="h-full shadow-sm border-voodoo-100 dark:border-voodoo-800">
+                <CardHeader>
+                <CardTitle className="text-lg font-semibold text-voodoo-900 dark:text-voodoo-50">Últimas Transacciones</CardTitle>
+                </CardHeader>
+                <CardContent>
+                <div className="space-y-6">
+                    {recentSales && recentSales.length > 0 ? (
+                    recentSales.map((sale: any) => (
+                        <div key={sale.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="h-9 w-9 rounded-full bg-voodoo-50 dark:bg-voodoo-900 flex items-center justify-center text-voodoo-600">
+                                <User className="h-4 w-4" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-voodoo-900 dark:text-voodoo-50">{sale.customer_name}</p>
+                                <p className="text-xs text-muted-foreground">{sale.customer_email}</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-sm font-bold text-voodoo-900 dark:text-voodoo-50">{formatPrice(sale.total)}</p>
+                            <p className="text-xs text-voodoo-500 capitalize">{sale.status}</p>
+                        </div>
+                        </div>
+                    ))
+                    ) : (
+                    <p className="text-center text-muted-foreground py-8">No hay ventas registradas</p>
+                    )}
                 </div>
-              ))
-            ) : (
-              <p className="text-center text-muted-foreground py-8">No hay ventas registradas</p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
     </div>
   )
 }

@@ -25,7 +25,7 @@ export default async function AdminLayout({
       redirect("/?error=unauthorized")
     }
   } catch (error) {
-    console.error("[v0] Error checking admin status:", error)
+    console.error("Error checking admin status:", error)
     redirect("/?error=unauthorized")
   }
 
